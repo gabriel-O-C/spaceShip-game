@@ -51,3 +51,12 @@
     border-radius: 50%;
     position: absolute;
 }
+
+.bomb{
+    width: 24px;
+    height: 40px;
+    background-image: url('assets/bomba.gif');
+    position: absolute;
+    
+
+}

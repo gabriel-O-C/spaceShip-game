@@ -5,6 +5,12 @@ let player, speedPlayer, playerPositionY, playerPositionX; // player control var
 let screenWidth = window.innerWidth;
 let screenHeight = window.innerHeight;
 let shotSpeed = 5;
+let bombCounter;
+let panelBombCounter;
+let totalBombs;
+let bombSpeed;
+let planetLife = 100;
+let timeCreateBomb; // interval to create a bomb
 
 function keyDown(){
     let key = event.keyCode;
@@ -35,6 +41,40 @@ function keyUp(){
     }
 
 }
+
+function createBomb(){
+    if(game){
+        let bombY = 0;
+        let bombX = Math.floor(Math.random() * screenWidth);
+        let bomb = document.createElement('div');
+        let attribute1 = document.createAttribute('class');
+        let attribute2 = document.createAttribute('style');
+        attribute1.value = "bomb";
+        attribute2.value = "top:" + bombY + "px; left:" + bombX + "px";
+        bomb.setAttributeNode(attribute1);
+        bomb.setAttributeNode(attribute2);
+        document.body.appendChild(bomb);
+        bombCounter--;
+    }
+}
+
+function bombControl(){
+    totalBombs = document.getElementsByClassName('bomb');
+    let totalBombsLenght = totalBombs.length;
+    for(let i = 0; i < totalBombsLenght; i++){
+        if(totalBombs[i]){
+            let positionI = totalBombs[i].offsetTop;
+            positionI += bombSpeed;
+            totalBombs[i].style.top = positionI + 'px';
+            if(positionI > screenHeight){
+                planetLife -= 10;
+               totalBombs[i].remove(); 
+
+            }
+        }
+    }
+}
+
 function shoot(x, y){ // X for x axis and Y y axis
     let shot = document.createElement("div");
     let attribute1 = document.createAttribute("class");
@@ -71,6 +111,7 @@ function gameLoop(){
     if(game){
         playerControls();
         controlShots();
+        bombControl();
 
     }
     frame = requestAnimationFrame(gameLoop);
@@ -87,6 +128,12 @@ function start(){
     player = document.getElementById('play-ship');
     player.style.top = playerPositionY + 'px';
     player.style.left = playerPositionX + 'px';
+
+    // initialazing bomb variables
+    clearInterval(timeCreateBomb);
+    bombSpeed = 3;
+    bombCounter = 150;
+    timeCreateBomb = setInterval(createBomb, 1500);
 
 
 
