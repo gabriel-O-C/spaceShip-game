@@ -74,6 +74,31 @@ function bombControl(){
         }
     }
 }
+function colisionBombShot(shot){ // colision between a bomb and a shot
+    let totalBombsLenght = totalBombs.length;
+    for(let i = 0; i < totalBombsLenght; i++){
+        if(totalBombs[i]){
+            if(
+                (
+                    (shot.offsetTop <= (totalBombs[i].offsetTop + 40) // topside of shot with botside of bomb
+                     && 
+                     (shot.offsetTop + 6)) // botside of shot with topside of bomb
+                    )
+                    &&
+                    (
+                        (shot.offsetLeft <= (totalBombs[i].offsetLeft + 24)) // leftside shot with rightside of bomb
+                        &&
+                        ((shot.offsetLeft + 6) >= (totalBombs[i].offsetLeft)) // rightside of shot with leftside of bomb
+                    )
+                     )  {
+                         totalBombs[i].remove();
+                         shot.remove();
+
+            }
+        }
+    }
+
+}
 
 function shoot(x, y){ // X for x axis and Y y axis
     let shot = document.createElement("div");
@@ -93,6 +118,7 @@ function controlShots(){
             let shotPosition = shots[i].offsetTop;
             shotPosition -= shotSpeed;
             shots[i].style.top = shotPosition + 'px';
+            colisionBombShot(shots[i]);
             if(shotPosition < 0){
                 shots[i].remove();
             }
@@ -124,7 +150,7 @@ function start(){
     playerDirectionX = playerDirectionY = 0;
     playerPositionX = screenWidth / 2;
     playerPositionY = screenHeight / 2;
-    speedPlayer = 5;
+    speedPlayer = 8;
     player = document.getElementById('play-ship');
     player.style.top = playerPositionY + 'px';
     player.style.left = playerPositionX + 'px';
