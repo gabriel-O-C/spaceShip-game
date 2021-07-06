@@ -1,0 +1,21 @@
+*{
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+}
+.play-ship{
+    width: 40px;
+    height: 40px;
+    background-image: url('assets/nave_jog.gif');
+    position: absolute;
+}
+
+.screen-message{
+    position: absolute;
+    margin-left: -25%;
+    top: 50px;
+    left: 50%;
+    width: 720px;
+    height: 621px;
+    display: none;
+}
