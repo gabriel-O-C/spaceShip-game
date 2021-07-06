@@ -4,6 +4,7 @@ let frame;
 let player, speedPlayer, playerPositionY, playerPositionX; // player control variables
 let screenWidth = window.innerWidth;
 let screenHeight = window.innerHeight;
+let shotSpeed = 5;
 
 function keyDown(){
     let key = event.keyCode;
@@ -19,6 +20,7 @@ function keyDown(){
     }
     if(key == 32){ // shoot
         // shoot
+        shoot(playerPositionX + 17, playerPositionY)
     }
 }
 
@@ -33,6 +35,30 @@ function keyUp(){
     }
 
 }
+function shoot(x, y){ // X for x axis and Y y axis
+    let shot = document.createElement("div");
+    let attribute1 = document.createAttribute("class");
+    let attribute2 = document.createAttribute("style");
+    attribute1.value = "player-shot";
+    attribute2.value = "top:" + y + "px; left: " + x + "px";
+    shot.setAttributeNode(attribute1);
+    shot.setAttributeNode(attribute2);
+    document.body.appendChild(shot);
+}
+function controlShots(){
+    let shots = document.getElementsByClassName('player-shot');
+    let shotLenght = shots.length;
+    for(let i = 0; i < shotLenght; i++){
+        if(shots[i]){
+            let shotPosition = shots[i].offsetTop;
+            shotPosition -= shotSpeed;
+            shots[i].style.top = shotPosition + 'px';
+            if(shotPosition < 0){
+                shots[i].remove();
+            }
+        }
+    }
+}
 
 function playerControls(){
     playerPositionY += playerDirectionY * speedPlayer;
@@ -44,6 +70,7 @@ function playerControls(){
 function gameLoop(){
     if(game){
         playerControls();
+        controlShots();
 
     }
     frame = requestAnimationFrame(gameLoop);
