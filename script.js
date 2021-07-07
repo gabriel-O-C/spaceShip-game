@@ -1,7 +1,7 @@
 let playerDirectionY, playerDirectionX;
 let game;
 let frame;
-let player, speedPlayer, playerPositionY, playerPositionX; // player control variables
+let player, speedPlayer, playerPositionY, playerPositionX; // PLAYER CONTROL VARIABLES
 let screenWidth = window.innerWidth;
 let screenHeight = window.innerHeight;
 let shotSpeed = 5;
@@ -9,9 +9,14 @@ let bombCounter;
 let panelBombCounter;
 let totalBombs;
 let bombSpeed;
-let planetLife = 100;
-let timeCreateBomb; // interval to create a bomb
+let planetLife = 300;
+let timeCreateBomb; // INTERVAL TO CREATE BOMB
+let indexExplosion = indexSound = 0;
+let planetLifeBar = document.getElementById('planet-bar');
+planetLifeBar.style.width = planetLife + 'px';
 
+
+// FUNCTIONS TO GET KEY VALUES
 function keyDown(){
     let key = event.keyCode;
     if(key == 38){ // up
@@ -41,6 +46,9 @@ function keyUp(){
     }
 
 }
+// END OF FUNCTIONS TO GET KEY VALUES
+
+// FUNCTIONS TO CREATE AND MANIPULATE THE BOMBS
 
 function createBomb(){
     if(game){
@@ -57,7 +65,16 @@ function createBomb(){
         bombCounter--;
     }
 }
-
+function gameManagement(){
+    planetLifeBar.style.width = planetLife + 'px';
+    if(bombCounter <= 0){
+        game = false;
+        clearInterval(timeCreateBomb);
+        window.open('win.html');
+    }else if(planetLife == 0){
+        window.open('lost.html');
+    } 
+}
 function bombControl(){
     totalBombs = document.getElementsByClassName('bomb');
     let totalBombsLenght = totalBombs.length;
@@ -68,6 +85,8 @@ function bombControl(){
             totalBombs[i].style.top = positionI + 'px';
             if(positionI > screenHeight){
                 planetLife -= 10;
+                gameManagement();
+                createExplosion(2, totalBombs[i].offsetLeft, null);
                totalBombs[i].remove(); 
 
             }
@@ -91,6 +110,7 @@ function colisionBombShot(shot){ // colision between a bomb and a shot
                         ((shot.offsetLeft + 6) >= (totalBombs[i].offsetLeft)) // rightside of shot with leftside of bomb
                     )
                      )  {
+                         createExplosion(1, totalBombs[i].offsetLeft - 25,  totalBombs[i].offsetTop);
                          totalBombs[i].remove();
                          shot.remove();
 
@@ -99,6 +119,10 @@ function colisionBombShot(shot){ // colision between a bomb and a shot
     }
 
 }
+
+// END OF FUNCTIONS TO CREATE AND MANIPULATE THE BOMBS
+
+// FUNCTIONS TO CREATE AND MANIPULATE SHOTS
 
 function shoot(x, y){ // X for x axis and Y y axis
     let shot = document.createElement("div");
@@ -126,13 +150,69 @@ function controlShots(){
     }
 }
 
+// END OF FUNCTIONS TO CREATE AND MANIPULATE SHOTS
+
+function createExplosion(type, x, y){ // type == 1 air explosion / type == 2 ground explosion
+    if(document.getElementById('explosion'+ (indexExplosion - 1))){
+        document.getElementById('explosion' + (indexExplosion - 1)).remove();
+    }
+    let explosion = document.createElement('div');
+    let img = document.createElement('img');
+    let sound = document.createElement('audio');
+    // DIV ATTRIBUTES
+
+    let attribute1 = document.createAttribute('class');
+    let attribute2 = document.createAttribute('style');
+    let attribute3 = document.createAttribute('id');
+
+    // IMG ATTRIBUTES
+
+    let attribute4 = document.createAttribute('src');
+
+    // AUDIO ATTRIBUTES
+    let attribute5 = document.createAttribute('src');
+    let attribute6 = document.createAttribute('id');
+
+    attribute3.value = 'explosion' + indexExplosion;
+
+    if(type === 1){
+        attribute1.value = 'explosion-air';
+        attribute2.value = 'top:' + y + 'px; left:' + x + 'px;';
+        attribute4.value = 'assets/explosao_ar.gif?'+ new Date();
+    }else{
+        attribute1.value = 'assets/explosion-ground';
+        attribute2.value = 'top:' + (screenHeight - 57) + 'px; left:' + (x - 17) + 'px;';
+        attribute4.value = 'assets/explosao_chao.gif?' + new Date();
+
+    }
+    attribute5.value = 'assets/exp1.mp3?' + new Date();
+    attribute6.value = 'sound' + indexSound;
+    explosion.setAttributeNode(attribute1);
+    explosion.setAttributeNode(attribute2);
+    explosion.setAttributeNode(attribute3);
+    img.setAttributeNode(attribute4);
+    sound.setAttributeNode(attribute5);
+    sound.setAttributeNode(attribute6);
+
+    explosion.appendChild(img);
+    explosion.appendChild(sound);
+    document.body.appendChild(explosion);
+    document.getElementById("sound" + indexSound).play();
+
+
+    indexExplosion++;
+    indexSound++;
+
+}
+
+// CONTROL SHIP 
 function playerControls(){
     playerPositionY += playerDirectionY * speedPlayer;
     playerPositionX += playerDirectionX * speedPlayer;
     player.style.top = playerPositionY + 'px';
     player.style.left = playerPositionX + 'px';
 }
-
+// MAINTAIN THE GAME "ON"
 function gameLoop(){
     if(game){
         playerControls();
@@ -142,7 +222,7 @@ function gameLoop(){
     }
     frame = requestAnimationFrame(gameLoop);
 }
-
+// STARTING GAME
 function start(){
     game = true;
 
@@ -166,6 +246,7 @@ function start(){
     gameLoop();
 }
 
+// EVENTS
 
 window.addEventListener('load', start);
 document.addEventListener('keydown', keyDown);

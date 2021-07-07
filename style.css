@@ -29,7 +29,7 @@
 }
 
 #planet-bar{
-    width: 300px;
+    width: 100px;
     height: 20px;
     background-color: #55f;
     
@@ -42,12 +42,13 @@
 #panel > .planet-text{
     text-transform: uppercase;
     font-weight: bold;
+    color: #fff;
 }
 
 .player-shot{
     width: 6px;
     height: 6px;
-    background-color: #000;
+    background-color: #fff;
     border-radius: 50%;
     position: absolute;
 }
@@ -57,6 +58,25 @@
     height: 40px;
     background-image: url('assets/bomba.gif');
     position: absolute;
-    
+}
 
+.explosion-ground{
+    width: 55px;
+    height: 57px;
+    position: absolute;
+
+}
+.explosion-air{
+    width: 70px;
+    height: 70px;
+    position: absolute;
+    z-index: 2;
+}
+.main{
+    background-image: url('assets/background.jpeg');
+    height: 100vh;
+    background-repeat: no-repeat;
+    background-size: cover;
+    z-index: -1;
+    position: relative;
 }
